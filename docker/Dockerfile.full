@@ -2,8 +2,9 @@
 # Find latest images at https://hub.docker.com/r/library/ubuntu/
 # Layer size: big: ~130 MB
 
-FROM ubuntu:16.04
-
+FROM ubuntu:xenial-20191024
+ENV UBUNTU_FLAVOR="xenial" \
+    UBUNTU_DATE="20191024"
 ARG UBUNTU_MIRROR=http://archive.ubuntu.com/ubuntu
 
 #== Ubuntu flavors - common
@@ -146,7 +147,7 @@ RUN apt-get -qqy update \
 # Full list at https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 #  e.g. "US/Pacific" for Los Angeles, California, USA
 # e.g. ENV TZ "US/Pacific"
-ENV TZ "America/New_York"
+ENV TZ "Europe/Berlin"
 # Apply TimeZone
 # Layer size: tiny: 1.339 MB
 RUN echo "Setting time zone to '${TZ}'" \
@@ -254,79 +255,79 @@ RUN if [ "${kubernetesSlimVersion}" = "false" ]; then \
     fi
 
 
-# # ------------------------#
-# # Sauce Connect Tunneling #
-# # ------------------------#
-# # https://docs.saucelabs.com/reference/sauce-connect/
-# # Layer size: medium: ~13 MB
-# ENV SAUCE_CONN_VER="sc-4.5.3-linux" \
-#     SAUCE_CONN_DOWN_URL="https://saucelabs.com/downloads"
-# RUN cd /tmp \
-#   && wget -nv "${SAUCE_CONN_DOWN_URL}/${SAUCE_CONN_VER}.tar.gz" \
-#   && tar -zxf "${SAUCE_CONN_VER}.tar.gz" \
-#   && rm -rf /usr/local/${SAUCE_CONN_VER} \
-#   && mv ${SAUCE_CONN_VER} /usr/local \
-#   && rm "${SAUCE_CONN_VER}.tar.gz" \
-#   && ln -sf /usr/local/${SAUCE_CONN_VER}/bin/sc /usr/local/bin/sc \
-#   && which sc
-#
-# # -----------------------#
-# # BrowserStack Tunneling #
-# # -----------------------#
-# # https://www.browserstack.com/local-testing
-# # Layer size: medium: 16.02 MB
-# ENV BSTACK_TUNNEL_URL="https://www.browserstack.com/browserstack-local" \
-#     BSTACK_TUNNEL_ZIP="BrowserStackLocal-linux-x64.zip"
-# RUN cd /tmp \
-#   && wget -nv "${BSTACK_TUNNEL_URL}/${BSTACK_TUNNEL_ZIP}" \
-#   && unzip "${BSTACK_TUNNEL_ZIP}" \
-#   && chmod 755 BrowserStackLocal \
-#   && rm "${BSTACK_TUNNEL_ZIP}" \
-#   && mv BrowserStackLocal /usr/local/bin \
-#   && which BrowserStackLocal
-#
-# # -----------------------#
-# # TestingBot Tunneling #
-# # -----------------------#
-# # https://testingbot.com/support/other/tunnel
-# ENV TB_TUNNEL_URL="https://testingbot.com/tunnel/testingbot-tunnel.jar"
-# # If you need to disable testingBot at build time set a build arg of testingBotEnabled=false
-# ARG testingBotEnabled=true
-# RUN if [ "${testingBotEnabled}" = "true" ]; then \
-#   cd /tmp \
-#   && wget -nv "${TB_TUNNEL_URL}" \
-#   && mv testingbot-tunnel.jar /usr/local/bin \
-#   && java -jar /usr/local/bin/testingbot-tunnel.jar --version; \
-#   else echo "Testing Bot Disabled"; \
-#   fi
-#
-# # ------------------------------#
-# # CrossBrowserTesting Tunneling #
-# # ------------------------------#
-# # https://help.crossbrowsertesting.com/local-connection/general/local-tunnel-overview/
-# ENV CBT_TUNNEL_URL="https://github.com/crossbrowsertesting/cbt-tunnel-nodejs/releases/download/v0.9.9" \
-#     CBT_TUNNEL_ZIP="cbt_tunnels-linux-x64.zip"
-# RUN cd /tmp \
-#   && wget -nv "${CBT_TUNNEL_URL}/${CBT_TUNNEL_ZIP}" \
-#   && unzip "${CBT_TUNNEL_ZIP}" \
-#   && rm "${CBT_TUNNEL_ZIP}" \
-#   && mv cbt_tunnels-linux-x64 /usr/local/bin \
-#   && which cbt_tunnels-linux-x64
-#
-# # -----------------------#
-# # LambdaTest Tunneling #
-# # -----------------------#
-# # https://www.lambdatest.com/support/docs/testing-locally-hosted-pages/
-# # Layer size: medium: ~16 MB
-# ENV LT_TUNNEL_URL="https://s3.amazonaws.com/lambda-tunnel" \
-#     LT_TUNNEL_ZIP="LT_Linux.zip"
-# RUN cd /tmp \
-#   && wget -nv "${LT_TUNNEL_URL}/${LT_TUNNEL_ZIP}" \
-#   && unzip "${LT_TUNNEL_ZIP}" \
-#   && chmod 755 LT \
-#   && rm "${LT_TUNNEL_ZIP}" \
-#   && mv LT /usr/local/bin \
-#   && which LT
+# ------------------------#
+# Sauce Connect Tunneling #
+# ------------------------#
+# https://docs.saucelabs.com/reference/sauce-connect/
+# Layer size: medium: ~13 MB
+ENV SAUCE_CONN_VER="sc-4.5.3-linux" \
+    SAUCE_CONN_DOWN_URL="https://saucelabs.com/downloads"
+RUN cd /tmp \
+  && wget -nv "${SAUCE_CONN_DOWN_URL}/${SAUCE_CONN_VER}.tar.gz" \
+  && tar -zxf "${SAUCE_CONN_VER}.tar.gz" \
+  && rm -rf /usr/local/${SAUCE_CONN_VER} \
+  && mv ${SAUCE_CONN_VER} /usr/local \
+  && rm "${SAUCE_CONN_VER}.tar.gz" \
+  && ln -sf /usr/local/${SAUCE_CONN_VER}/bin/sc /usr/local/bin/sc \
+  && which sc
+
+# -----------------------#
+# BrowserStack Tunneling #
+# -----------------------#
+# https://www.browserstack.com/local-testing
+# Layer size: medium: 16.02 MB
+ENV BSTACK_TUNNEL_URL="https://www.browserstack.com/browserstack-local" \
+    BSTACK_TUNNEL_ZIP="BrowserStackLocal-linux-x64.zip"
+RUN cd /tmp \
+  && wget -nv "${BSTACK_TUNNEL_URL}/${BSTACK_TUNNEL_ZIP}" \
+  && unzip "${BSTACK_TUNNEL_ZIP}" \
+  && chmod 755 BrowserStackLocal \
+  && rm "${BSTACK_TUNNEL_ZIP}" \
+  && mv BrowserStackLocal /usr/local/bin \
+  && which BrowserStackLocal
+
+# -----------------------#
+# TestingBot Tunneling #
+# -----------------------#
+# https://testingbot.com/support/other/tunnel
+ENV TB_TUNNEL_URL="https://testingbot.com/tunnel/testingbot-tunnel.jar"
+# If you need to disable testingBot at build time set a build arg of testingBotEnabled=false
+ARG testingBotEnabled=true
+RUN if [ "${testingBotEnabled}" = "true" ]; then \
+  cd /tmp \
+  && wget -nv "${TB_TUNNEL_URL}" \
+  && mv testingbot-tunnel.jar /usr/local/bin \
+  && java -jar /usr/local/bin/testingbot-tunnel.jar --version; \
+  else echo "Testing Bot Disabled"; \
+  fi
+
+# ------------------------------#
+# CrossBrowserTesting Tunneling #
+# ------------------------------#
+# https://help.crossbrowsertesting.com/local-connection/general/local-tunnel-overview/
+ENV CBT_TUNNEL_URL="https://github.com/crossbrowsertesting/cbt-tunnel-nodejs/releases/download/v0.9.9" \
+    CBT_TUNNEL_ZIP="cbt_tunnels-linux-x64.zip"
+RUN cd /tmp \
+  && wget -nv "${CBT_TUNNEL_URL}/${CBT_TUNNEL_ZIP}" \
+  && unzip "${CBT_TUNNEL_ZIP}" \
+  && rm "${CBT_TUNNEL_ZIP}" \
+  && mv cbt_tunnels-linux-x64 /usr/local/bin \
+  && which cbt_tunnels-linux-x64
+
+# -----------------------#
+# LambdaTest Tunneling #
+# -----------------------#
+# https://www.lambdatest.com/support/docs/testing-locally-hosted-pages/
+# Layer size: medium: ~16 MB
+ENV LT_TUNNEL_URL="https://s3.amazonaws.com/lambda-tunnel" \
+    LT_TUNNEL_ZIP="LT_Linux.zip"
+RUN cd /tmp \
+  && wget -nv "${LT_TUNNEL_URL}/${LT_TUNNEL_ZIP}" \
+  && unzip "${LT_TUNNEL_ZIP}" \
+  && chmod 755 LT \
+  && rm "${LT_TUNNEL_ZIP}" \
+  && mv LT /usr/local/bin \
+  && which LT
 
 
 #===================================================

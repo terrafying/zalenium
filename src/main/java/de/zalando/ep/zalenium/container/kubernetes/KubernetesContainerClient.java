@@ -70,6 +70,7 @@ public class KubernetesContainerClient implements ContainerClient {
 
     private Map<String, String> createdByZaleniumMap;
     private Map<String, String> appLabelMap;
+    private Map<String, String> appAnnotationMap;
 
     private Map<VolumeMount, Volume> mountedSharedFoldersMap = new HashMap<>();
     private VolumeMount nodeSharedArtifactsMount;
@@ -108,6 +109,9 @@ public class KubernetesContainerClient implements ContainerClient {
 
             appLabelMap = new HashMap<>();
             appLabelMap.put("app", appName);
+
+            appAnnotationMap = new HashMap<>();
+            appAnnotationMap.put("cluster-autoscaler.kubernetes.io/safe-to-evict", "true");
 
             createdByZaleniumMap = new HashMap<>();
             createdByZaleniumMap.put("createdBy", appName);
@@ -422,6 +426,8 @@ public class KubernetesContainerClient implements ContainerClient {
         labels.putAll(appLabelMap);
         labels.putAll(podSelector);
         config.setLabels(labels);
+        // Add annotations to PodConfiguration instance
+        config.setAnnotations(appAnnotationMap);
         config.setImagePullPolicy(imagePullPolicy);
         config.setImagePullSecrets(imagePullSecrets);
         config.setMountedSharedFoldersMap(mountedSharedFoldersMap);
@@ -647,6 +653,7 @@ public class KubernetesContainerClient implements ContainerClient {
                 .withNewMetadata()
                     .withGenerateName(config.getContainerIdPrefix())
                     .addToLabels(config.getLabels())
+                    .addToAnnotations(config.getAnnotations())
                     .withOwnerReferences(config.getOwnerRef())
                 .endMetadata()
                 .withNewSpec()

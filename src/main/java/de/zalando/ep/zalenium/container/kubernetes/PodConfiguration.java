@@ -28,6 +28,7 @@ public class PodConfiguration {
     private List<EnvVar> envVars;
     private List<HostAlias> hostAliases;
     private Map<String, String> labels;
+    private Map<String, String> annotations;
     private Map<VolumeMount, Volume> mountedSharedFoldersMap;
     private Map<String, Quantity> podLimits;
     private Map<String, Quantity> podRequests;
@@ -95,6 +96,8 @@ public class PodConfiguration {
     public void setLabels(Map<String, String> labels) {
         this.labels = labels;
     }
+    public Map<String, String> getAnnotations() { return annotations; }
+    public void setAnnotations(Map<String, String> annotations) { this.annotations = annotations; }
     public Map<String, Quantity> getPodLimits() {
         return podLimits;
     }
